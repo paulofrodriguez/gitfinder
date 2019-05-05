@@ -13,35 +13,58 @@
 </head>
 <body>
 <div class="container">
-    <nav class="navbar navbar-expand-sm navbar-light bg-light">
-        <a class="navbar-brand" href="#">GitFinder</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#langs"
-                aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <a href="#" class="navbar-brand">GitFinder</a>
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <form class="form-inline my-2 my-md-0">
-            <input class="form-control" type="text" placeholder="Type something to search...">
+        <div id="navbarCollapse" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="nav-item">
+                    <a href="#" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">Profile</a>
+                </li>
 
-        </form>
-        <div class="collapse navbar-collapse justify-content-end" id="langs">
-            <ul class="navbar-nav mr-auto">
+                <!--            <li class="nav-item dropdown">-->
+                <!--                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Search for</a>-->
+                <!--                <div class="dropdown-menu">-->
+                <!--                    <a href="#" class="dropdown-item">Java</a>-->
+                <!--                    <a href="#" class="dropdown-item">Python</a>-->
+                <!--                    <a href="#" class="dropdown-item">Ruby</a>-->
+                <!--                    <a href="#" class="dropdown-item">JavaScript</a>-->
+                <!--                    <a href="#" class="dropdown-item">Assembly</a>-->
+                <!--                    <div class="dropdown-divider"></div>                    <a href="#"class="dropdown-item">Trash</a>-->
+                <!--                </div>-->
+                <!--            </li>-->
+            </ul>
 
-                <li class="nav-item dropdown ">
-                    <a class="nav-link dropdown-toggle" id="langs" data-toggle="dropdown" aria-haspopup="true"
-                       aria-expanded="false">Language to Search</a>
-                    <div class="dropdown-menu" aria-labelledby="langs">
-                        <a class="dropdown-item" href="#">Java</a>
-                        <a class="dropdown-item" href="#">Ruby</a>
-                        <a class="dropdown-item" href="#">Python</a>
-                        <a class="dropdown-item" href="#">JavaScript</a>
-                        <a class="dropdown-item" href="#">Assembly</a>
+            <ul class="nav navbar-nav ml-auto">
+
+                <li class="nav-item">
+                    <input class="form-control" type="text" placeholder="Search query..." readonly>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Search for...</a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a href="#" class="dropdown-item">Java</a>
+                        <a href="#" class="dropdown-item">Python</a>
+                        <a href="#" class="dropdown-item">Ruby</a>
+                        <a href="#" class="dropdown-item">JavaScript</a>
+                        <a href="#" class="dropdown-item">Assembly</a>
                     </div>
                 </li>
             </ul>
-
-
         </div>
     </nav>
+
+    <div class="container">
+
+        <p>${name}</p>
+
+    </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"

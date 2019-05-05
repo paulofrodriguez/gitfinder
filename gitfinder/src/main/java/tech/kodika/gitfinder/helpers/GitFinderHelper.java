@@ -37,7 +37,7 @@ public class GitFinderHelper {
     @Autowired
     LicenseRepository licenseRepository;
 
-    public void getTrendingRepos(String query, String language) throws Throwable {
+    public SearchInfo getTrendingRepos(String query, String language) throws Throwable {
 
         try {
 
@@ -47,7 +47,11 @@ public class GitFinderHelper {
 
             StringBuffer json = gitFinder(query, language, apiUrl);
 
-            save(parser(json));
+            SearchInfo s = parser(json);
+
+            save(s);
+
+            return s;
 
 
         } catch (Throwable t) {
@@ -177,7 +181,7 @@ public class GitFinderHelper {
         //ultrawide monitor: I can make long lines. Thanks LG.
         if (query == null || query.length() == 0 || language == null || language.length() == 0 || apiUrl == null || apiUrl.length() == 0) {
 
-            throw new InvalidParameterException("Invalid Period or Language: |period:" + query + " language:" + language + ".");
+            throw new InvalidParameterException("Invalid query or Language: |query:" + query + " language:" + language + ".");
         }
 
     }
