@@ -9,12 +9,9 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.util.List;
 
-@Entity
-@Table(name = "searchInfo")
+
 public class SearchInfo {
 
     @SerializedName("total_count")
@@ -22,11 +19,13 @@ public class SearchInfo {
     @Getter
     @Setter
     public Integer totalCount;
+
     @SerializedName("incomplete_results")
     @Expose
     @Getter
     @Setter
     public Boolean incompleteResults;
+
     @SerializedName("items")
     @Expose
     @Getter

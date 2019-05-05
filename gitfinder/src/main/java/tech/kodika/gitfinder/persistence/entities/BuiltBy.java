@@ -32,85 +32,61 @@ public class BuiltBy {
     @Getter
     @Setter
     private int Id;
+
     @Getter
     @Setter
     @JsonProperty("username")
     private String username;
+
     @Getter
     @Setter
     @JsonProperty("href")
     private String href;
+
     @Getter
     @Setter
     @JsonProperty("avatar")
     private String avatar;
+
     @Transient
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
     @Getter
     @Setter
     @ManyToMany(mappedBy = "builtBy")
     private List<Repo> repo;
 
-//    @JsonProperty("username")
-//    public String getUsername() {
-//        return username;
-//    }
-//
-//    @JsonProperty("username")
-//    public void setUsername(String username) {
-//        this.username = username;
-//    }
-//
-//    @JsonProperty("href")
-//    public String getHref() {
-//        return href;
-//    }
-//
-//    @JsonProperty("href")
-//    public void setHref(String href) {
-//        this.href = href;
-//    }
-//
-//    @JsonProperty("avatar")
-//    public String getAvatar() {
-//        return avatar;
-//    }
-//
-//    @JsonProperty("avatar")
-//    public void setAvatar(String avatar) {
-//        this.avatar = avatar;
-//    }
-//
-//    @JsonAnyGetter
-//    public Map<String, Object> getAdditionalProperties() {
-//        return this.additionalProperties;
-//    }
-//
-//    @JsonAnySetter
-//    public void setAdditionalProperty(String name, Object value) {
-//        this.additionalProperties.put(name, value);
-//    }
-
     @Override
     public String toString() {
+
         return new ToStringBuilder(this).append("username", username).append("href", href).append("avatar", avatar).append("additionalProperties", additionalProperties).toString();
+
     }
 
     @Override
     public int hashCode() {
+
         return new HashCodeBuilder().append(username).append(additionalProperties).append(avatar).append(href).toHashCode();
+
     }
 
     @Override
     public boolean equals(Object other) {
+
         if (other == this) {
+
             return true;
+
         }
+
         if ((other instanceof BuiltBy) == false) {
+
             return false;
         }
+
         BuiltBy rhs = ((BuiltBy) other);
+
         return new EqualsBuilder().append(username, rhs.username).append(additionalProperties, rhs.additionalProperties).append(avatar, rhs.avatar).append(href, rhs.href).isEquals();
     }
 

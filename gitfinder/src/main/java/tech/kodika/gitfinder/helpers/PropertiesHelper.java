@@ -11,6 +11,9 @@ import java.util.List;
 public class PropertiesHelper {
 
     public final static String URL_TARGET = "URL.TARGET";
+
+    public static final String URL_TARGET_TRENDING = "URL.TARGET.TRENDING";
+
     @Autowired
     private PropertyRepository propertyRepository;
 

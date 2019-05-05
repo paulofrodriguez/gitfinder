@@ -4,13 +4,10 @@ import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tech.kodika.gitfinder.exceptions.GitFinderException;
-import tech.kodika.gitfinder.persistence.entities.Item;
-import tech.kodika.gitfinder.persistence.entities.License;
-import tech.kodika.gitfinder.persistence.entities.Owner;
-import tech.kodika.gitfinder.persistence.entities.SearchInfo;
-import tech.kodika.gitfinder.persistence.repositories.ItemRepository;
-import tech.kodika.gitfinder.persistence.repositories.LicenseRepository;
-import tech.kodika.gitfinder.persistence.repositories.OwnerRepository;
+import tech.kodika.gitfinder.persistence.entities.BuiltBy;
+import tech.kodika.gitfinder.persistence.entities.Repo;
+import tech.kodika.gitfinder.persistence.repositories.BuiltByRepository;
+import tech.kodika.gitfinder.persistence.repositories.RepoRepository;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -19,36 +16,31 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.security.InvalidParameterException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
-public class GitFinderHelper {
+public class GitFinderTrendingHelper {
 
     @Autowired
     PropertiesHelper propertiesHelper;
 
     @Autowired
-    ItemRepository itemRepository;
+    RepoRepository repoRepository;
 
     @Autowired
-    OwnerRepository ownerRepository;
+    BuiltByRepository builtByRepository;
 
-    @Autowired
-    LicenseRepository licenseRepository;
-
-    public void getTrendingRepos(String query, String language) throws Throwable {
+    public void getTrendingRepos(String period, String language) throws Throwable {
 
         try {
 
-            String apiUrl = propertiesHelper.getProperty(PropertiesHelper.URL_TARGET);
+            String apiUrl = propertiesHelper.getProperty(PropertiesHelper.URL_TARGET_TRENDING);
 
-            validate(query, language, apiUrl);
+            validate(period, language, apiUrl);
 
-            StringBuffer json = gitFinder(query, language, apiUrl);
+            StringBuffer json = gitFinder(period, language, apiUrl);
 
             save(parser(json));
-
 
         } catch (Throwable t) {
 
@@ -57,22 +49,18 @@ public class GitFinderHelper {
 
     }
 
-    private StringBuffer gitFinder(String query, String language, String apiUrl) throws Throwable {
+    private StringBuffer gitFinder(String period, String language, String apiUrl) throws Throwable {
 
         //prepare
         Map<String, String> parameters = new HashMap<>();
 
         parameters.put("language", language);
 
-        parameters.put("q", query);
-
-        parameters.put("order", "desc"); //hard coded only for the purpose of the test, bad practice
-
-        parameters.put("sort", "stars"); //hard coded only for the purpose of the test, bad practice
+        parameters.put("since", period);
 
         URL url = new URL(apiUrl + "?" + getParamsString(parameters));
 
-        //ask...
+        //ask
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
         con.setRequestMethod("GET");
@@ -85,7 +73,6 @@ public class GitFinderHelper {
         int status = con.getResponseCode();
 
         if (status != 200) {
-
             throw new Exception("Something went wrong. Server answer with status: " + status + " for request: " + url + " with parmeters: " + parameters.toString());
         }
 
@@ -108,7 +95,8 @@ public class GitFinderHelper {
     }
 
 
-    // I know it breaks OO but create a class just for it is too much, ok ?
+    //method below is a courtesy of https://www.baeldung.com/java-http-request
+    // ps: I know it breaks OO but create a class just for it is too much, ok ?
 
     private String getParamsString(Map<String, String> params) throws Throwable {
 
@@ -132,52 +120,59 @@ public class GitFinderHelper {
     }
 
 
-    private SearchInfo parser(StringBuffer json) throws Throwable {
+    private Repo[] parser(StringBuffer json) throws Throwable {
 
 
         Gson gson = new Gson();
 
-        SearchInfo arr = gson.fromJson(json.toString(), SearchInfo.class);
+        Repo[] arr = gson.fromJson(json.toString(), Repo[].class);
 
         return arr;
 
     }
 
-    private void save(SearchInfo searchInfo) throws Throwable {
+    private void save(Repo[] repo) throws Throwable {
 
-        List<Item> items = searchInfo.getItems();
-        for (Item i : items) {
+        for (Repo r : repo) {
 
-            Owner o = i.getOwner();
+            for (BuiltBy b : r.getBuiltBy()) {
 
-            License l = i.getLicense();
+                //maybe, it exists
+                BuiltBy aux = builtByRepository.findByUsername(b.getUsername());
 
-            if (o != null) {
+                if (aux != null) {//exists, let's update
 
-                ownerRepository.save(o);
+                    b.setId(aux.getId());
 
-            } else {
+                    builtByRepository.save(b);
 
-                throw new GitFinderException("There is a item with no owner: " + i.toString());
+                } else {//not found, let's  create
+
+                    builtByRepository.save(b);
+
                 }
 
-            if (l != null) {
-
-                licenseRepository.save(l);
             }
 
-            itemRepository.save(i);
-        }
+            Repo aux = repoRepository.findByName(r.getName());
 
+            if (aux != null) {
+                r.setId(aux.getId());
+                repoRepository.save(r);
+            } else {
+                repoRepository.save(r);
+            }
+
+        }
 
     }
 
-    private void validate(String query, String language, String apiUrl) throws Throwable {
+    private void validate(String period, String language, String apiUrl) throws Throwable {
 
         //ultrawide monitor: I can make long lines. Thanks LG.
-        if (query == null || query.length() == 0 || language == null || language.length() == 0 || apiUrl == null || apiUrl.length() == 0) {
+        if (period == null || period.length() == 0 || language == null || language.length() == 0 || apiUrl == null || apiUrl.length() == 0) {
 
-            throw new InvalidParameterException("Invalid Period or Language: |period:" + query + " language:" + language + ".");
+            throw new InvalidParameterException("Invalid Period or Language: |period:" + period + " language:" + language + ".");
         }
 
     }

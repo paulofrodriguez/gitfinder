@@ -18,6 +18,7 @@ public class GitfinderApplication {
 
 
     public static void main(String[] args) {
+
         SpringApplication.run(GitfinderApplication.class, args);
 
     }
